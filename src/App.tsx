@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Suspense, lazy } from 'react'
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom'
 
-function App() {
+import { Sidebar } from './components/Sidebar'
+import { ConsentForm } from './pages/ConsentForm'
+const CollectedConsents = lazy(() => import('./pages/CollectedConsents')) // INFO: We don't have many data right now to use lazy loading but it will be useful in the future. When app increases we can also use react-virtualized for only visible rows in the table
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <div className="grid grid-cols-[1fr_3fr]">
+        <Sidebar />
+        <Routes>
+          <Route path="/" element={<Navigate to="/give-consent" />} />{' '}
+          <Route path="/give-consent" element={<ConsentForm />} />
+          <Route
+            path="/consents"
+            element={
+              <Suspense fallback={<h1>Loading...</h1>}>
+                <CollectedConsents />
+              </Suspense>
+            }
+          />
+          <Route path="*" element={<h1>404 Page not found</h1>} />
+        </Routes>
+      </div>
+    </Router>
+  )
 }
 
-export default App;
+export default App
