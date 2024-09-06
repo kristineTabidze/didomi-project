@@ -1,46 +1,111 @@
-# Getting Started with Create React App
+# Didomi code challenge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+In some specific cases, companies need to collect consent from consumers before using their data. For instance, website visitors might need to explicitly consent to receive email newsletters through a form before a company can send emails to those visitors.
 
-## Available Scripts
+The goal of this challenge is to build the simplest possible consent collection and management application where a user can enter its information and agree to a list of data processing. It's not very user-friendly but that'll do the trick for this time.
 
-In the project directory, you can run:
+## Table of Contents
 
-### `npm start`
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Testing](#testing)
+- [Folder Structure](#folder-structure)
+- [Contributing](#contributing)
+- [Contact](#contact)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Features
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Consent Form: A form that allows a user to enter her name, email address and to select data processes that she agrees to.
+  When the user fills out the form and clicks on the "Give consent" button, the consent gets added to the list of consents that appears on the second view.
+- Collected Consents: A list of consents that were given by users. This view simply displays items from a list with client-side pagination.
 
-### `npm test`
+## Technologies Used
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This project is built with:
 
-### `npm run build`
+- **React**: Frontend library for building user interfaces.
+- **TypeScript**: Typed JavaScript for better code quality and readability.
+- **Zustand**: State management for handling user consents.
+- **Material-UI**: UI components for faster and easier web development.
+- **Tailwind CSS**: Utility-first CSS framework.
+- **Formik**: Form management library with validation support.
+- **MSW (Mock Service Worker)**: Mocking API requests for testing.
+- **Vitest and React Testing Library**: Testing framework used for unit and component testing.
+- **Web Vitals**: Set of metrics to measure quality of web app
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To get started, clone the repository and install the dependencies:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+git clone https://github.com/kristineTabidze/didomi-project
+cd didomi-project
+npm install
+```
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+To run the application locally:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm run start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Open your browser and navigate to `http://localhost:3000/give-consent` to see the app in action.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Testing
 
-## Learn More
+This project uses **Vitest** for testing. To run the tests, use:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm run test
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Mocking API Requests
+
+The application uses Mock Service Worker (MSW) to mock API requests. MSW is set up to handle the following:
+
+- GET requests to fetch user consents.
+- POST requests to add new consents.
+
+## Folder Structure
+
+Here's a brief overview of the folder structure:
+
+```
+didomi-project/
+├── public/ # Public assets
+├── src/
+│ ├── components/ # Reusable components
+│ ├── fixtures/ # Fixed values
+│ ├── mocks/ # MSW set up
+│ ├── pages/ # Application pages
+│ ├── store/ # Zustand stores
+│ ├── types/ # Reusable types
+│ ├── App.tsx # Main app component
+│ ├── index.tsx # Entry point
+│ └── ...
+├── package.json # Project configuration
+└── README.md # This file
+```
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Commit your changes (`git commit -m 'Add your message here'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Open a pull request.
+
+## Contact
+
+For any questions or feedback, please reach out to:
+
+- Author: [Kristine Tabidze](mailto:qristinatabidze@gmail.com)
+- GitHub: [kristineTabidze](https://github.com/kristineTabidze)
+
+---

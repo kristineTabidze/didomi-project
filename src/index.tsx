@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
+import { Helmet } from 'react-helmet'
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') {
@@ -18,12 +19,16 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 enableMocking().then(() => {
   root.render(
     <React.StrictMode>
+      <Helmet>
+        <title>Didomi Project</title>
+        <meta
+          name="description"
+          content="This is app where user fills the consent form and see the collected consents in the table."
+        />
+      </Helmet>
       <App />
     </React.StrictMode>
   )
 })
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+reportWebVitals(console.log) // log the performance metrics to the console

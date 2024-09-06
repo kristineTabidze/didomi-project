@@ -59,14 +59,7 @@ export const ConsentForm: React.FC = () => {
   }
 
   return (
-    <div className="py-4 w-[600px] mx-auto text-center">
-      <Helmet>
-        <title>Give Consent</title>
-        <meta
-          name="description"
-          content="This is page where user fill the consent form"
-        />
-      </Helmet>
+    <div className="py-8 px-4 max-w-full sm:max-w-xl lg:max-w-3xl xl:max-w-5xl mx-auto text-center">
       <Formik
         initialValues={defaultFormValues}
         validationSchema={validationSchema}
@@ -83,8 +76,8 @@ export const ConsentForm: React.FC = () => {
           isSubmitting,
         }) => (
           <Form>
-            <div className="flex justify-around">
-              <FormGroup>
+            <div className="flex flex-col sm:flex-row justify-around gap-6">
+              <FormGroup className="flex-1">
                 <Field
                   as={TextField}
                   name="name"
@@ -97,7 +90,7 @@ export const ConsentForm: React.FC = () => {
                 />
               </FormGroup>
 
-              <FormGroup>
+              <FormGroup className="flex-1">
                 <Field
                   as={TextField}
                   name="email"
@@ -110,18 +103,19 @@ export const ConsentForm: React.FC = () => {
                 />
               </FormGroup>
             </div>
-            <h2>I agree to:</h2>
+
+            <h2 className="mt-6 text-lg font-semibold">I agree to:</h2>
+
             <FieldArray
               name="checkboxes_wrapper"
               render={() => (
-                <ul className="my-3 mx-auto text-left border border-gray-300 p-2.5">
+                <ul className="my-4 mx-auto text-left border border-gray-300 p-4 rounded">
                   {consentOptions.map((checkboxLabel) => {
                     const isChecked = values.checkboxes.includes(checkboxLabel)
 
                     return (
-                      <li>
+                      <li key={checkboxLabel} className="my-2">
                         <FormControlLabel
-                          key={checkboxLabel}
                           control={
                             <Checkbox
                               checked={isChecked}
@@ -158,6 +152,7 @@ export const ConsentForm: React.FC = () => {
               type="submit"
               variant="contained"
               color="primary"
+              className="mt-6"
               data-testid="submit-button"
             >
               Give Consent

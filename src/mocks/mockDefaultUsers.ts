@@ -1,20 +1,17 @@
 export const mockedUsers = [
   {
-    name: 'John Doe',
-    email: 'johnDoe@gmail.com',
-    checkboxes:
-      'Receive newsletter,Be shown targeted ads,Contribute to anonymous visit statistics',
+    name: 'User 1',
+    email: 'user@1example.com',
+    checkboxes: 'Receive newsletter,Be shown targeted ads',
   },
   {
-    name: 'John Doe2',
-    email: 'johnDoe2@gmail.com',
-    checkboxes:
-      'Receive newsletter,Be shown targeted ads,Contribute to anonymous visit statistics',
+    name: 'User 2',
+    email: 'user2@example.com',
+    checkboxes: 'Contribute to anonymous visit statistics',
   },
   {
-    name: 'John Doe3',
-    email: 'johnDoe3@gmail.com',
-    checkboxes:
-      'Receive newsletter,Be shown targeted ads,Contribute to anonymous visit statistics',
+    name: 'User 3',
+    email: 'user3@example.com',
+    checkboxes: 'Be shown targeted ads',
   },
 ]

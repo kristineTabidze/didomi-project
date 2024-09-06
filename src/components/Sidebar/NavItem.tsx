@@ -18,6 +18,7 @@ export const NavItem: React.FC<INavItemProps> = ({ title, link }) => {
           )
         }
         to={link}
+        data-testid="navlink"
       >
         {title}
       </NavLink>

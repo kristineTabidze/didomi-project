@@ -1,52 +1,56 @@
-import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ConsentForm } from './ConsentForm'
-import { useUserStore } from '../../store/userStore'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { vi } from 'vitest'
+import { useUserStore } from '../../store/userStore'
+import { server } from '../../mocks/server'
+import { http, HttpResponse } from 'msw'
 
-// Mock Zustand store
-jest.mock('../../store/userStore', () => ({
-  useUserStore: jest.fn(),
-}))
+// spy on useUserStore.addUser and use real store implementation
+const addUserSpy = vi.spyOn(useUserStore.getState(), 'addUser')
 
-describe('ConsentForm', () => {
-  const addUser = jest.fn()
-  ;(useUserStore as unknown as jest.Mock).mockImplementation((selector) =>
-    selector({ addUser })
+const renderConsentForm = () =>
+  render(
+    <Router>
+      <ConsentForm />
+    </Router>
   )
 
-  test('It renders form with initial values', () => {
-    render(
-      <Router>
-        <ConsentForm />
-      </Router>
-    )
+const utils = {
+  fillEmail: (email: string) => {
+    fireEvent.change(screen.getByLabelText(/Email Address/i), {
+      target: { value: email },
+    })
+  },
+  fillName: (name: string) => {
+    fireEvent.change(screen.getByLabelText(/Name/i), {
+      target: { value: name },
+    })
+  },
+}
 
-    expect(screen.getByLabelText(/Name/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Email Address/i)).toBeInTheDocument()
+const mockedUser = {
+  name: 'User',
+  email: 'user@example.com',
+  checkboxes: 'Receive newsletter',
+}
+
+describe('ConsentForm', () => {
+  test('It renders form with initial values', () => {
+    const { getByLabelText } = renderConsentForm()
+    expect(getByLabelText(/Name/i)).toBeInTheDocument()
+    expect(getByLabelText(/Email Address/i)).toBeInTheDocument()
   })
 
   test('Submit button is disabled when form is not filled properly', () => {
-    const { getByTestId } = render(
-      <Router>
-        <ConsentForm />
-      </Router>
-    )
-
+    const { getByTestId } = renderConsentForm()
     const submitButton = getByTestId('submit-button') as HTMLButtonElement
     expect(submitButton.tabIndex).toBe(-1) // When button is disabled it should not be tabbable
   })
 
   test('Shows error messages for invalid email', async () => {
-    const { getByLabelText, getByText } = render(
-      <Router>
-        <ConsentForm />
-      </Router>
-    )
-    // Change email input value to an invalid email and blur the input
-    fireEvent.change(getByLabelText(/Email Address/i), {
-      target: { value: 'johnexamplecom' },
-    })
+    const { getByLabelText, getByText } = renderConsentForm()
+    utils.fillEmail('user.com')
     fireEvent.blur(getByLabelText(/Email Address/i))
     // Check if error messages are displayed
     await waitFor(() => {
@@ -55,32 +59,20 @@ describe('ConsentForm', () => {
   })
 
   test('Shows error messages when name field is empty', async () => {
-    const { getByLabelText, getByText } = render(
-      <Router>
-        <ConsentForm />
-      </Router>
-    )
-    fireEvent.change(getByLabelText(/Name/i), {
-      target: { value: '' },
-    })
+    const { getByLabelText, getByText } = renderConsentForm()
+    utils.fillName('')
     fireEvent.blur(getByLabelText(/Name/i))
+
     await waitFor(() => {
       expect(getByText(/Name is required/i)).toBeInTheDocument()
     })
   })
 
   test('Shows error messages when name and email are correct, but none of the checkboxes are checked', async () => {
-    const { getByLabelText, getByText } = render(
-      <Router>
-        <ConsentForm />
-      </Router>
-    )
-    fireEvent.change(getByLabelText(/Email Address/i), {
-      target: { value: 'john@examplecom' },
-    })
-    fireEvent.change(getByLabelText(/Email Address/i), {
-      target: { value: 'john' },
-    })
+    const { getByText } = renderConsentForm()
+    utils.fillEmail(mockedUser.email)
+    utils.fillName(mockedUser.name)
+
     await waitFor(() => {
       expect(
         getByText(/At least one checkbox should be checked/i)
@@ -89,32 +81,29 @@ describe('ConsentForm', () => {
   })
 
   test('Submits form and redirects to next page', async () => {
-    const { getByLabelText, getByText } = render(
-      <Router>
-        <ConsentForm />
-      </Router>
-    )
-
-    fireEvent.change(screen.getByLabelText(/Name/i), {
-      target: { value: 'John Doe' },
-    })
-    fireEvent.change(screen.getByLabelText(/Email Address/i), {
-      target: { value: 'john@example.com' },
-    })
+    const { getByLabelText, getByText } = renderConsentForm()
+    utils.fillEmail(mockedUser.email)
+    utils.fillName(mockedUser.name)
 
     // Check checkbox
-    fireEvent.click(getByLabelText(/Receive newsletter/i))
+    fireEvent.click(getByLabelText(/receive newsletter/i))
+
+    // Mock post request to /consents
+    server.use(
+      http.post('/consents', async ({ request }) => {
+        expect(await request.json()).toEqual(mockedUser)
+        return HttpResponse.json(mockedUser, { status: 201 })
+      })
+    )
 
     // Submit form
-    fireEvent.click(getByText(/Give Consent/i))
+    fireEvent.click(getByText(/give consent/i))
+    // Check if zustand addUser is called with the correct user
+    await waitFor(() => {
+      expect(addUserSpy).toHaveBeenCalledWith(mockedUser)
+    })
 
-    // await waitFor(() => {
-    //   expect(global.fetch).toHaveBeenCalledTimes(1)
-    //   expect(addUser).toHaveBeenCalledWith({
-    //     name: 'John Doe',
-    //     email: 'john@example.com',
-    //     checkboxes: 'Receive newsletter',
-    //   })
-    // })
+    // Check if we are redirected to the correct page
+    expect(window.location.pathname).toBe('/consents')
   })
 })

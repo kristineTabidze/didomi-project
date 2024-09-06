@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Helmet } from 'react-helmet'
 import { Paper, TablePagination } from '@mui/material'
 import { Table } from '../../components/Table'
 import { useUserStore } from '../../store/userStore'
@@ -58,13 +57,6 @@ const CollectedConsents = () => {
 
   return (
     <div className="py-4 mx-auto w-3/4 ">
-      <Helmet>
-        <title>Collected consents</title>
-        <meta
-          name="description"
-          content="A list of consents that were given by users"
-        />
-      </Helmet>
       {paginatedData.length > 0 ? (
         <Paper>
           <Table
